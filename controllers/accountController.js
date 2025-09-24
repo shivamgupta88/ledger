@@ -32,7 +32,7 @@ const createAccountHandler = async (req, res) => {
     // Create new account
     const newAccount = await createAccount(value);
     
-    console.log(`✅ Account created: ${newAccount.code} - ${newAccount.name}`);
+    console.log(`Account created: ${newAccount.code} - ${newAccount.name}`);
     
     res.status(201).json({
       success: true,
@@ -47,10 +47,10 @@ const createAccountHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error creating account:', error);
+    console.error('Error creating account:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error while creating account',
+      message: 'Error creating account',
       error: error.message
     });
   }
@@ -65,7 +65,7 @@ const getAllAccountsHandler = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Invalid account type',
-        error: 'Type must be one of: Asset, Liability, Equity, Revenue, Expense'
+        error: 'Invalid account type'
       });
     }
 
@@ -82,10 +82,10 @@ const getAllAccountsHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching accounts:', error);
+    console.error('Error fetching accounts:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error while fetching accounts',
+      message: 'Error fetching accounts',
       error: error.message
     });
   }
@@ -151,10 +151,10 @@ const getAccountBalanceHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching account balance:', error);
+    console.error('Error fetching account balance:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error while fetching account balance',
+      message: 'Error fetching balance',
       error: error.message
     });
   }

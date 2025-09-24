@@ -2,19 +2,15 @@ const db = require('../config/database');
 
 async function runMigrations() {
   try {
-    console.log('Starting database migrations...');
+    console.log('Starting migrations...');
     
-    // Create tables directly instead of reading from file
     const schema = `
-      -- Create database tables for double-entry ledger
 
-      -- API Keys table
       CREATE TABLE IF NOT EXISTS api_keys (
           key VARCHAR(255) PRIMARY KEY,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- Accounts table
       CREATE TABLE IF NOT EXISTS accounts (
           id SERIAL PRIMARY KEY,
           code VARCHAR(20) UNIQUE NOT NULL,
@@ -23,7 +19,6 @@ async function runMigrations() {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- Journal Entries table
       CREATE TABLE IF NOT EXISTS journal_entries (
           id SERIAL PRIMARY KEY,
           date DATE NOT NULL,
@@ -32,7 +27,6 @@ async function runMigrations() {
           reverses_entry_id INTEGER REFERENCES journal_entries(id)
       );
 
-      -- Journal Lines table
       CREATE TABLE IF NOT EXISTS journal_lines (
           id SERIAL PRIMARY KEY,
           entry_id INTEGER NOT NULL REFERENCES journal_entries(id),
@@ -46,7 +40,6 @@ async function runMigrations() {
           )
       );
 
-      -- Idempotency Keys table
       CREATE TABLE IF NOT EXISTS idempotency_keys (
           key VARCHAR(255) PRIMARY KEY,
           request_hash VARCHAR(255) NOT NULL,
@@ -54,7 +47,6 @@ async function runMigrations() {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- Indexes for performance
       CREATE INDEX IF NOT EXISTS idx_journal_lines_entry_id ON journal_lines(entry_id);
       CREATE INDEX IF NOT EXISTS idx_journal_lines_account_id ON journal_lines(account_id);
       CREATE INDEX IF NOT EXISTS idx_journal_entries_date ON journal_entries(date);
@@ -64,16 +56,15 @@ async function runMigrations() {
     
     await db.query(schema);
     
-    console.log('Database migrations completed successfully!');
+    console.log('Database migrations completed');
     
-    // Create default API key if it doesn't exist
     const apiKey = process.env.API_KEY || 'default-api-key';
     await db.query(
       'INSERT INTO api_keys (key) VALUES ($1) ON CONFLICT (key) DO NOTHING',
       [apiKey]
     );
     
-    console.log('API key setup completed!');
+    console.log('API key setup completed');
     
   } catch (error) {
     console.error('Migration failed:', error);

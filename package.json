@@ -7,10 +7,9 @@
     "dev": "nodemon index.js",
     "migrate": "node scripts/migrate.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "description": "ledger API",
+  "author": "Shivam",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",

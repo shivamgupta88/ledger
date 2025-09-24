@@ -26,10 +26,10 @@ const createJournalEntryHandler = async (req, res) => {
     
     // Return existing entry if found
     if (existingEntry) {
-      console.log(`🔄 Returning existing entry for idempotency key: ${idempotencyKey}`);
+      console.log(`Returning existing entry for idempotency key: ${idempotencyKey}`);
       return res.status(200).json({
         success: true,
-        message: 'Journal entry already exists (idempotent)',
+        message: 'Entry already exists (idempotent)',
         data: existingEntry,
         idempotent: true
       });
@@ -60,11 +60,11 @@ const createJournalEntryHandler = async (req, res) => {
       await storeIdempotencyKey(idempotencyKey, requestHash, newEntry.id);
     }
 
-    console.log(`✅ Journal entry created: ID ${newEntry.id}`);
+    console.log(`Journal entry created: ID ${newEntry.id}`);
     
     res.status(201).json({
       success: true,
-      message: 'Journal entry created and posted successfully',
+      message: 'Journal entry created',
       data: {
         id: newEntry.id,
         date: newEntry.date,
@@ -83,7 +83,7 @@ const createJournalEntryHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error creating journal entry:', error);
+    console.error('Error creating journal entry:', error);
     
     // Handle specific database errors
     if (error.message.includes('not found')) {
@@ -96,7 +96,7 @@ const createJournalEntryHandler = async (req, res) => {
     
     res.status(500).json({
       success: false,
-      message: 'Internal server error while creating journal entry',
+      message: 'Error creating journal entry',
       error: error.message
     });
   }
@@ -147,10 +147,10 @@ const getJournalEntryHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching journal entry:', error);
+    console.error('Error fetching journal entry:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error while fetching journal entry',
+      message: 'Error fetching journal entry',
       error: error.message
     });
   }
@@ -195,10 +195,10 @@ const getAllJournalEntriesHandler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching journal entries:', error);
+    console.error('Error fetching journal entries:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error while fetching journal entries',
+      message: 'Error fetching journal entries',
       error: error.message
     });
   }

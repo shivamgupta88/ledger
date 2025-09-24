@@ -22,7 +22,7 @@ const journalLineSchema = Joi.object({
   
   return value;
 }).message({
-  'custom.xor': 'Either debit or credit must be greater than 0, but not both'
+  'custom.xor': 'Must have either debit or credit, not both'
 });
 
 const createJournalEntrySchema = Joi.object({
