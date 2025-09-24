@@ -24,9 +24,6 @@ const storeIdempotencyKey = async (idempotencyKey, requestHash, entryId = null) 
 };
 
 const handleIdempotency = async (idempotencyKey, requestBody) => {
-  if (!idempotencyKey) {
-    return { isValid: true, existingEntry: null };
-  }
 
   const requestHash = generateRequestHash(requestBody);
   const existingKey = await checkIdempotencyKey(idempotencyKey);

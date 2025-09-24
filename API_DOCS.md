@@ -1,6 +1,6 @@
 # API Documentation
 
-REST API for double-entry bookkeeping.
+Double-entry bookkeeping REST API.
 
 ## Base URL
 ```
@@ -9,7 +9,7 @@ http://localhost:3000/api
 
 ## Authentication
 
-All API endpoints require authentication using an API key in the request header:
+All endpoints require an API key:
 
 ```http
 x-api-key: your-api-key-here
@@ -181,7 +181,7 @@ Create a new journal entry (immutable once posted).
 **Endpoint:** `POST /journal-entries`
 
 Headers:
-- `Idempotency-Key` (optional): Prevents duplicate entries on retry
+- `Idempotency-Key` (optional): Prevents duplicate entries on retry. If not provided, one will be auto-generated.
 
 Request:
 ```json
@@ -221,7 +221,6 @@ Example:
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: my-secure-api-key-123" \
-  -H "Idempotency-Key: rent-jan-2025" \
   -d '{
     "date": "2025-01-15",
     "narration": "Office rent payment for January",
@@ -433,7 +432,7 @@ Response (200):
 
 ## Sample Workflow
 
-Here's a complete example of setting up accounts and recording transactions:
+Example setup:
 
 ### 1. Create Chart of Accounts
 ```bash
@@ -461,7 +460,6 @@ curl -X POST http://localhost:3000/api/accounts \
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: my-secure-api-key-123" \
-  -H "Idempotency-Key: initial-investment-001" \
   -d '{
     "date": "2025-01-01",
     "narration": "Initial capital investment",
@@ -477,7 +475,6 @@ curl -X POST http://localhost:3000/api/journal-entries \
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: my-secure-api-key-123" \
-  -H "Idempotency-Key: sale-001" \
   -d '{
     "date": "2025-01-05",
     "narration": "Cash sale to customer",

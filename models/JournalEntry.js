@@ -5,8 +5,7 @@ const createJournalEntry = async ({ date, narration, lines, reversesEntryId = nu
   
   try {
     await client.query('BEGIN');
-    
-    // Insert journal entry
+
     const entryQuery = `
       INSERT INTO journal_entries (date, narration, reverses_entry_id)
       VALUES ($1, $2, $3)
@@ -14,13 +13,11 @@ const createJournalEntry = async ({ date, narration, lines, reversesEntryId = nu
     `;
     const entryResult = await client.query(entryQuery, [date, narration, reversesEntryId]);
     const entry = entryResult.rows[0];
-    
-    // Insert journal lines
+
     const insertedLines = [];
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      
-      // Get account ID by code
+
       const accountQuery = 'SELECT id FROM accounts WHERE code = $1';
       const accountResult = await client.query(accountQuery, [line.account_code]);
       

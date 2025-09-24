@@ -10,7 +10,7 @@ Double-entry accounting system where each transaction affects at least two accou
 
 - Immutable journal entries
 - Account balance tracking
-- Idempotency support
+- Automatic idempotency protection
 - Transaction history
 - Multiple account types (Assets, Liabilities, Equity, Revenue, Expenses)
 
@@ -73,7 +73,7 @@ Expected response:
 
 ## API Documentation
 
-Complete API documentation with examples is available in [API_DOCS.md](./API_DOCS.md).
+Full API documentation is in [API_DOCS.md](./API_DOCS.md).
 
 ### Examples
 
@@ -90,7 +90,6 @@ Record a transaction:
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
-  -H "Idempotency-Key: unique-transaction-id" \
   -d '{
     "date": "2025-01-15",
     "narration": "Initial capital investment",
@@ -150,7 +149,6 @@ Initial investment:
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
-  -H "Idempotency-Key: seed-capital" \
   -d '{
     "date": "2025-01-01",
     "narration": "Seed capital investment",
@@ -166,7 +164,6 @@ Cash sale:
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
-  -H "Idempotency-Key: cash-sale-001" \
   -d '{
     "date": "2025-01-05",
     "narration": "Cash sale to customer",
@@ -182,7 +179,6 @@ Rent payment:
 curl -X POST http://localhost:3000/api/journal-entries \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
-  -H "Idempotency-Key: rent-jan-2025" \
   -d '{
     "date": "2025-01-07",
     "narration": "Office rent payment for January",
@@ -209,11 +205,11 @@ After running the test scenario:
 - journal_lines: Individual debit/credit entries
 - idempotency_keys: Duplicate prevention
 
-### Design Notes
-- Amounts stored as integers (minor units)
-- Entries are immutable
-- Balances calculated in real-time
-- Idempotency support for retries
+### Notes
+- Amounts in minor units (cents)
+- Entries are immutable once posted
+- Real-time balance calculation
+- Automatic duplicate prevention
 
 ## Error Responses
 
@@ -264,10 +260,9 @@ ledger/
 ## Contributing
 
 1. Ensure all journal entries balance (debits = credits)
-2. Add proper input validation for new endpoints
-3. Include comprehensive error handling
-4. Update API documentation for new features
-5. Test with the provided scenario before submitting
+2. Add input validation for new endpoints
+3. Include error handling
+4. Update documentation for new features
 
 ## License
 

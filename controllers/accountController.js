@@ -8,7 +8,6 @@ const { validateAccount } = require('../utils/validation');
 
 const createAccountHandler = async (req, res) => {
   try {
-    // Validate request body
     const { isValid, error, value } = validateAccount(req.body);
     
     if (!isValid) {
@@ -19,7 +18,6 @@ const createAccountHandler = async (req, res) => {
       });
     }
 
-    // Check if account with this code already exists
     const existingAccount = await findAccountByCode(value.code);
     if (existingAccount) {
       return res.status(409).json({
@@ -29,7 +27,6 @@ const createAccountHandler = async (req, res) => {
       });
     }
 
-    // Create new account
     const newAccount = await createAccount(value);
     
     console.log(`Account created: ${newAccount.code} - ${newAccount.name}`);
@@ -59,8 +56,7 @@ const createAccountHandler = async (req, res) => {
 const getAllAccountsHandler = async (req, res) => {
   try {
     const { type } = req.query;
-    
-    // Validate account type if provided
+
     if (type && !['Asset', 'Liability', 'Equity', 'Revenue', 'Expense'].includes(type)) {
       return res.status(400).json({
         success: false,
@@ -95,8 +91,7 @@ const getAccountBalanceHandler = async (req, res) => {
   try {
     const { code } = req.params;
     const { as_of } = req.query;
-    
-    // Validate account code
+
     if (!code) {
       return res.status(400).json({
         success: false,
@@ -104,7 +99,6 @@ const getAccountBalanceHandler = async (req, res) => {
       });
     }
 
-    // Validate as_of date format if provided
     let asOfDate = null;
     if (as_of) {
       asOfDate = new Date(as_of);
@@ -115,8 +109,7 @@ const getAccountBalanceHandler = async (req, res) => {
           error: 'Date should be in YYYY-MM-DD format'
         });
       }
-      
-      // Check if date is not in future
+
       if (asOfDate > new Date()) {
         return res.status(400).json({
           success: false,

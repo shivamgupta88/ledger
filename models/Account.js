@@ -69,10 +69,7 @@ const getAccountBalance = async (accountCode, asOfDate = null) => {
 
   const totalDebits = parseInt(row.total_debits);
   const totalCredits = parseInt(row.total_credits);
-  
-  // Calculate balance based on account type
-  // Assets and Expenses are debit-normal (positive when debits > credits)
-  // Liabilities, Equity, and Revenue are credit-normal (positive when credits > debits)
+
   let balance;
   if (['Asset', 'Expense'].includes(row.type)) {
     balance = totalDebits - totalCredits;

@@ -8,14 +8,12 @@ const { handleIdempotency, storeIdempotencyKey } = require('../utils/idempotency
 
 const createJournalEntryHandler = async (req, res) => {
   try {
-    const idempotencyKey = req.headers['idempotency-key'];
-    
-    // Handle idempotency
+    const idempotencyKey = req.headers['idempotency-key'] ||
+      `auto-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const { isValid, error, existingEntry, requestHash } = await handleIdempotency(
       idempotencyKey, 
       req.body
     );
-    
     if (!isValid) {
       return res.status(400).json({
         success: false,
@@ -23,8 +21,7 @@ const createJournalEntryHandler = async (req, res) => {
         error: error
       });
     }
-    
-    // Return existing entry if found
+
     if (existingEntry) {
       console.log(`Returning existing entry for idempotency key: ${idempotencyKey}`);
       return res.status(200).json({
@@ -35,7 +32,6 @@ const createJournalEntryHandler = async (req, res) => {
       });
     }
 
-    // Validate request body
     const validation = validateJournalEntry(req.body);
     if (!validation.isValid) {
       return res.status(400).json({
@@ -47,7 +43,6 @@ const createJournalEntryHandler = async (req, res) => {
 
     const { date, narration, lines, reverses_entry_id } = validation.value;
 
-    // Create journal entry
     const newEntry = await createJournalEntry({
       date,
       narration,
@@ -55,10 +50,7 @@ const createJournalEntryHandler = async (req, res) => {
       reversesEntryId: reverses_entry_id
     });
 
-    // Store idempotency key if provided
-    if (idempotencyKey) {
-      await storeIdempotencyKey(idempotencyKey, requestHash, newEntry.id);
-    }
+    await storeIdempotencyKey(idempotencyKey, requestHash, newEntry.id);
 
     console.log(`Journal entry created: ID ${newEntry.id}`);
     
@@ -84,8 +76,7 @@ const createJournalEntryHandler = async (req, res) => {
 
   } catch (error) {
     console.error('Error creating journal entry:', error);
-    
-    // Handle specific database errors
+
     if (error.message.includes('not found')) {
       return res.status(400).json({
         success: false,
@@ -105,8 +96,6 @@ const createJournalEntryHandler = async (req, res) => {
 const getJournalEntryHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    
-    // Validate ID
     const entryId = parseInt(id);
     if (isNaN(entryId) || entryId <= 0) {
       return res.status(400).json({
@@ -160,8 +149,7 @@ const getAllJournalEntriesHandler = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
     const offset = parseInt(req.query.offset) || 0;
-    
-    // Validate pagination parameters
+
     if (limit < 1 || limit > 100) {
       return res.status(400).json({
         success: false,
