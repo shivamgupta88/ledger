@@ -1,4 +1,4 @@
-# Ledger API
+# Ledger API : https://ledger-4da8.onrender.com
 
 REST API for double-entry bookkeeping with account management and transaction recording.
 
@@ -64,6 +64,7 @@ The server will be available at `http://localhost:3000`
 Test the health endpoint:
 ```bash
 curl http://localhost:3000/health
+curl https://ledger-4da8.onrender.com/health
 ```
 
 Expected response:
