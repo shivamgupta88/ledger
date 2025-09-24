@@ -17,7 +17,7 @@ Double-entry accounting system where each transaction affects at least two accou
 ## Quick Start
 
 ### Prerequisites
-- Node.js v16+
+- Node.js v18+
 - PostgreSQL
 - npm
 
